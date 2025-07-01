@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elizi Emlak | Portföy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --main-color: #1ccfcf;
+      --accent-color: #005c97;
+      --bg-gradient: linear-gradient(135deg, #fff 0%, #f7f8fa 100%);
+      --card-bg: rgba(255,255,255,0.55);
+      --card-blur: blur(12px);
+      --shadow: 0 8px 32px rgba(44,62,80,0.18);
+      --shadow-hover: 0 16px 48px rgba(44,62,80,0.22);
+      --radius: 28px;
+      --transition: 0.22s cubic-bezier(.4,0,.2,1);
+      --badge-bg: linear-gradient(90deg, #1ccfcf 0%, #005c97 100%);
+      --badge-shadow: 0 2px 8px rgba(44,62,80,0.13);
+    }
+    body {
+      font-family: 'Montserrat', Arial, sans-serif;
+      background: var(--bg-gradient);
+      margin: 0;
+      color: #23272f;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .topbar {
+      width: 100%;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2.2rem 0 0 0;
+      position: relative;
+      z-index: 20;
+      min-height: 60px;
+    }
+    .logo-only {
+      display: flex;
+      align-items: center;
+      height: 54px;
+      margin-left: 2.5rem;
+    }
+    .logo-only img {
+      height: 54px;
+      width: auto;
+      display: block;
+      border-radius: 14px;
+      background: none;
+      box-shadow: none;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .hero {
+      max-width: 900px;
+      margin: 2.5rem auto 1.5rem auto;
+      text-align: center;
+      padding: 0 1.2rem;
+    }
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #1a2a33;
+      margin-bottom: 0.7rem;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 12px rgba(44,62,80,0.08);
+    }
+    .hero-desc {
+      font-size: 1.25rem;
+      color: #444;
+      margin-bottom: 2.2rem;
+      font-weight: 500;
+    }
+    .tabs {
+      display: flex;
+      gap: 1.2rem;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+    .tab-btn {
+      background: linear-gradient(90deg, #fff 0%, #f7f8fa 100%);
+      color: var(--main-color);
+      border: none;
+      border-radius: 22px;
+      padding: 0.65rem 1.7rem 0.65rem 1.2rem;
+      font-size: 1.13rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+      transition: background 0.22s, color 0.18s, transform 0.18s, box-shadow 0.18s;
+      outline: none;
+      text-decoration: none;
+      margin: 0;
+      position: relative;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: linear-gradient(90deg, var(--main-color) 0%, var(--accent-color) 100%);
+      color: #fff;
+      transform: scale(1.06);
+      box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto 2.5rem auto;
+      padding: 0 1.2rem;
+    }
+    .tab-content { display: none; animation: fadeIn 0.5s; }
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+      gap: 2.2rem;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .portfolio-item {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 0;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      transition: box-shadow var(--transition), transform var(--transition), background var(--transition);
+      position: relative;
+      overflow: hidden;
+      min-width: 0;
+      opacity: 0;
+      animation: fadeInCard 0.5s forwards;
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      border: 1.5px solid rgba(28,207,207,0.13);
+      min-height: 220px;
+    }
+    .portfolio-item:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-8px) scale(1.035);
+      background: rgba(255,255,255,0.75);
+    }
+    @keyframes fadeInCard { to { opacity: 1; transform: none; } from { opacity: 0; transform: translateY(20px) scale(0.98); } }
+    .portfolio-badge {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      background: var(--badge-bg);
+      color: #fff;
+      font-size: 0.98rem;
+      font-weight: 700;
+      padding: 0.38em 1.1em;
+      border-radius: 16px;
+      box-shadow: var(--badge-shadow);
+      letter-spacing: 0.5px;
+      z-index: 2;
+      animation: badgePop 0.7s cubic-bezier(.4,0,.2,1);
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .portfolio-item:hover .portfolio-badge {
+      animation: badgeWobble 0.5s;
+      box-shadow: 0 4px 16px rgba(44,62,80,0.18);
+      transform: scale(1.08) rotate(-2deg);
+    }
+    @keyframes badgePop {
+      0% { transform: scale(0.7) translateY(-20px); opacity: 0; }
+      80% { transform: scale(1.1) translateY(2px); opacity: 1; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    @keyframes badgeWobble {
+      0% { transform: scale(1.08) rotate(-2deg); }
+      30% { transform: scale(0.95) rotate(2deg); }
+      60% { transform: scale(1.1) rotate(-2deg); }
+      100% { transform: scale(1.08) rotate(-2deg); }
+    }
+    .portfolio-img {
+      width: 420px;
+      min-width: 320px;
+      max-width: 520px;
+      height: 270px;
+      min-height: 180px;
+      background: #e0f7fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b2ebf2;
+      font-size: 2.2rem;
+      overflow: hidden;
+      border-radius: var(--radius) 0 0 var(--radius);
+      position: relative;
+    }
+    .portfolio-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      border-radius: var(--radius) 0 0 var(--radius);
+      transition: opacity 0.3s;
+      background: #e0f7fa;
+    }
+    .portfolio-img .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.18);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.85;
+      transition: background 0.18s;
+    }
+    .portfolio-img .slider-arrow:hover { background: rgba(0,0,0,0.32); }
+    .portfolio-img .slider-arrow.left { left: 10px; }
+    .portfolio-img .slider-arrow.right { right: 10px; }
+    .portfolio-img .slider-dots {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+    }
+    .portfolio-img .slider-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #bbb;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .portfolio-img .slider-dot.active { background: #1ccfcf; }
+    .portfolio-content {
+      flex: 1;
+      padding: 1.5rem 2.2rem 1.5rem 2.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0.7rem;
+      opacity: 0.92;
+      transition: opacity 0.3s;
+    }
+    .portfolio-item:hover .portfolio-content {
+      opacity: 1;
+      animation: fadeInDetails 0.5s;
+    }
+    @keyframes fadeInDetails {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: none; }
+    }
+    .portfolio-title {
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: #1a2a33;
+      text-align: center;
+      margin-bottom: 0.2rem;
+    }
+    .portfolio-price {
+      font-size: 1.09rem;
+      color: var(--main-color);
+      font-weight: 600;
+      margin-bottom: 0.1rem;
+    }
+    .portfolio-info {
+      font-size: 1.01rem;
+      color: #444;
+      text-align: center;
+      margin-bottom: 0.1rem;
+    }
+    .portfolio-btn {
+      margin-top: 0.7rem;
+      background: var(--main-color);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.6rem 1.5rem;
+      font-size: 1.07rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition);
+      box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+    }
+    .portfolio-btn:hover { background: var(--accent-color); color: #23272f; }
+    .whatsapp-btn {
+      background: linear-gradient(90deg, #25d366 0%, #128c7e 100%);
+      color: #fff !important;
+      border: none;
+      border-radius: 22px;
+      padding: 0.65rem 1.7rem 0.65rem 1.2rem;
+      font-size: 1.13rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+      transition: background 0.22s, transform 0.18s, box-shadow 0.18s;
+      outline: none;
+      text-decoration: none;
+      margin: 0;
+      position: relative;
+    }
+    .whatsapp-btn i {
+      font-size: 1.45em;
+      margin-right: 0.2em;
+      color: #fff;
+    }
+    .whatsapp-btn:hover {
+      background: linear-gradient(90deg, #128c7e 0%, #25d366 100%);
+      transform: scale(1.06);
+      box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+      color: #fff !important;
+    }
+    .contact, .address {
+      background: var(--card-bg);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 1.5rem 1.3rem;
+      text-align: center;
+      margin-bottom: 1.2rem;
+      color: #1a2a33;
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      border: 1.5px solid rgba(28,207,207,0.13);
+    }
+    .contact h2 { margin-top: 0; color: var(--main-color); font-size: 1.18rem; }
+    .contact-info { margin: 1rem 0; font-size: 1.09rem; }
+    .contact a { color: var(--main-color); text-decoration: none; font-weight: 700; transition: color var(--transition); }
+    .contact a:hover { color: var(--accent-color); text-decoration: underline; }
+    .address strong { color: var(--main-color); }
+    @media (max-width: 900px) {
+      .container { padding: 0.7rem 0.1rem; }
+      .topbar { padding: 2.2rem 0 0 0.5rem; }
+      .logo-only { margin-left: 0.5rem; }
+      .tabs { gap: 0.7rem; margin-bottom: 2rem; }
+      .tab-btn { padding: 0.7rem 1.2rem; font-size: 1rem; }
+      .portfolio-img {
+        width: 140px;
+        min-width: 90px;
+        max-width: 180px;
+        height: 90px;
+        min-height: 60px;
+      }
+    }
+    @media (max-width: 600px) {
+      .container { padding: 0.3rem 0.01rem; }
+      .tab-content.active { grid-template-columns: 1fr; }
+      .portfolio-item { min-width: 98vw; max-width: 99vw; }
+      #modal { width: 99vw !important; min-width: unset !important; padding: 0.5rem 0.05rem 0.5rem 0.05rem !important; }
+      #modal-slider > div { height: 110px !important; }
+      .topbar { padding: 2.2rem 0 0 0.1rem; }
+      .logo-only { margin-left: 0.1rem; }
+      .hero-title { font-size: 1.5rem; }
+      .hero-desc { font-size: 1rem; }
+    }
+    .info-bubble {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: linear-gradient(90deg, #fff 0%, #e0f7fa 100%);
+      box-shadow: 0 4px 24px rgba(44,62,80,0.13);
+      border-radius: 32px;
+      padding: 0.7rem 2.1rem 0.7rem 1.3rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1.1rem;
+      font-size: 1.08rem;
+      font-weight: 500;
+      border: 1.5px solid #1ccfcf33;
+      opacity: 0.97;
+      transition: box-shadow 0.18s, background 0.18s;
+      backdrop-filter: blur(6px);
+      max-width: 700px;
+      min-width: 220px;
+      color: #1a2a33;
+    }
+    .info-bubble .info-icon {
+      font-size: 2.1rem;
+      color: var(--main-color);
+      margin-top: 0.1rem;
+      flex-shrink: 0;
+    }
+    .info-bubble-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+    .info-bubble:hover {
+      box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+      background: linear-gradient(90deg, #e0f7fa 0%, #fff 100%);
+    }
+    @media (max-width: 900px) {
+      .info-bubble { max-width: 98vw; padding: 0.5rem 0.7rem 0.5rem 0.7rem; font-size: 0.97rem; }
+      .info-bubble .info-icon { font-size: 1.3rem; }
+    }
+    @media (max-width: 600px) {
+      .info-bubble { top: 8px; left: 50%; transform: translateX(-50%); padding: 0.3rem 0.3rem 0.3rem 0.5rem; font-size: 0.93rem; }
+      .info-bubble .info-icon { font-size: 1.1rem; }
+    }
+    .detail-btn {
+      background: linear-gradient(90deg, var(--main-color) 0%, var(--accent-color) 100%);
+      color: #fff !important;
+      border: none;
+      border-radius: 22px;
+      padding: 0.65rem 1.7rem 0.65rem 1.2rem;
+      font-size: 1.13rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+      transition: background 0.22s, transform 0.18s, box-shadow 0.18s;
+      outline: none;
+      text-decoration: none;
+      margin: 0;
+      position: relative;
+      cursor: pointer;
+    }
+    .detail-btn i {
+      font-size: 1.3em;
+      margin-right: 0.2em;
+      color: #fff;
+    }
+    .detail-btn:hover {
+      background: linear-gradient(90deg, var(--accent-color) 0%, var(--main-color) 100%);
+      transform: scale(1.06);
+      box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+      color: #fff !important;
+    }
+    #modal-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 14px;
+      background: #e0f7fa;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo-only">
+      <img src="https://i.hizliresim.com/9fffzlg.png" alt="Elizi Emlak Logo" />
+    </div>
+  </div>
+  <div class="hero">
+    <div class="hero-title">Elizi Emlak Günlük Kiralık Daireler</div>
+    <div class="hero-desc">Çandarlı ve Dikili'deki en güncel ve seçkin portföylerimizi inceleyin. Hayalinizdeki evi veya tatil fırsatını kolayca bulun!</div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('candarlı')">Çandarlı</button>
+      <button class="tab-btn" onclick="showTab('dikili')">Dikili</button>
+      <button class="tab-btn" onclick="showTab('iletisim')">İletişim</button>
+    </div>
+  </div>
+  <div class="container">
+    <div id="candarlı" class="tab-content active">
+      <div class="portfolio-item">
+        <span class="portfolio-badge">Sezonluk</span>
+        <div class="portfolio-img" id="villa-img">
+          <button class="slider-arrow left" onclick="event.stopPropagation();slidePortfolioImg(this, -1)">&lt;</button>
+          <img src="https://i.hizliresim.com/s58z0za.jpeg" alt="Havuzlu Villa" />
+          <button class="slider-arrow right" onclick="event.stopPropagation();slidePortfolioImg(this, 1)">&gt;</button>
+          <div class="slider-dots">
+            <span class="slider-dot active" onclick="event.stopPropagation();gotoPortfolioImg(this, 0)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 1)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 2)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 3)"></span>
+          </div>
+        </div>
+        <div class="portfolio-content">
+          <div class="portfolio-title">Çandarlı Denizköy Yolu Üzeri Havuzlu Villa</div>
+          <div class="portfolio-price">8500₺ günlüğü - Aylık 200.000₺</div>
+          <div class="portfolio-info">Maksimum Kişi: 8</div>
+          <div style="display:flex;gap:0.7rem;align-items:center;">
+            <button class="detail-btn" type="button" onclick="openModal('Çandarlı Denizköy Yolu Üzeri Havuzlu Villa', '8500₺ günlüğü - Aylık 200.000₺', 'Maksimum Kişi: 8', 'Çandarlı Denizköy Yolu üzerinde, havuzlu ve lüks villa. Tüm detaylar için iletişime geçebilirsiniz.', [
+              'https://i.hizliresim.com/s58z0za.jpeg',
+              'https://i.hizliresim.com/g4sqlh8.jpeg',
+              'https://i.hizliresim.com/sc650zx.jpeg',
+              'https://i.hizliresim.com/5wnvsjn.jpeg'])"><i class='fa-solid fa-circle-info'></i>Detay</button>
+            <a class="whatsapp-btn" target="_blank" rel="noopener" href="https://wa.me/905075753842?text=Merhaba, 'Çandarlı Denizköy Yolu Üzeri Havuzlu Villa' hakkında bilgi almak istiyorum."><i class="fa-brands fa-whatsapp"></i>İletişime Geç</a>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <span class="portfolio-badge">Sezonluk</span>
+        <div class="portfolio-img" id="baris-img">
+          <button class="slider-arrow left" onclick="event.stopPropagation();slidePortfolioImg(this, -1)">&lt;</button>
+          <img src="https://i.hizliresim.com/p4ax6ak.jpeg" alt="Barış Market Dublex" />
+          <button class="slider-arrow right" onclick="event.stopPropagation();slidePortfolioImg(this, 1)">&gt;</button>
+          <div class="slider-dots">
+            <span class="slider-dot active" onclick="event.stopPropagation();gotoPortfolioImg(this, 0)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 1)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 2)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 3)"></span>
+          </div>
+        </div>
+        <div class="portfolio-content">
+          <div class="portfolio-title">Çandarlı Barış Market Üstü Dublex 3+1 Daire</div>
+          <div class="portfolio-price">6000₺ günlüğü</div>
+          <div class="portfolio-info">Maksimum Kişi: 5</div>
+          <div style="display:flex;gap:0.7rem;align-items:center;">
+            <button class="detail-btn" type="button" onclick="openModal('Çandarlı Barış Market Üstü Dublex 3+1 Daire', '6000₺ günlüğü', 'Maksimum Kişi: 5', '', [
+              'https://i.hizliresim.com/p4ax6ak.jpeg',
+              'https://i.hizliresim.com/56rjl7r.jpeg',
+              'https://i.hizliresim.com/lr1711w.jpeg',
+              'https://i.hizliresim.com/jbp586u.jpeg'])"><i class='fa-solid fa-circle-info'></i>Detay</button>
+            <a class="whatsapp-btn" target="_blank" rel="noopener" href="https://wa.me/905075753842?text=Merhaba, 'Çandarlı Barış Market Üstü Dublex 3+1 Daire' hakkında bilgi almak istiyorum."><i class="fa-brands fa-whatsapp"></i>İletişime Geç</a>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <span class="portfolio-badge">Sezonluk</span>
+        <div class="portfolio-img" id="ayten-img">
+          <button class="slider-arrow left" onclick="event.stopPropagation();slidePortfolioImg(this, -1)">&lt;</button>
+          <img src="https://i.hizliresim.com/j2v1exu.jpeg" alt="Ayten Hanım Villa" />
+          <button class="slider-arrow right" onclick="event.stopPropagation();slidePortfolioImg(this, 1)">&gt;</button>
+          <div class="slider-dots">
+            <span class="slider-dot active" onclick="event.stopPropagation();gotoPortfolioImg(this, 0)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 1)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 2)"></span>
+          </div>
+        </div>
+        <div class="portfolio-content">
+          <div class="portfolio-title">Çandarlı Ayten Hanım Konakları Karşısı 3+1 Bahçeli Villa</div>
+          <div class="portfolio-price">6500₺ günlüğü</div>
+          <div class="portfolio-info">Maksimum Kişi: 5</div>
+          <div style="display:flex;gap:0.7rem;align-items:center;">
+            <button class="detail-btn" type="button" onclick="openModal('Çandarlı Ayten Hanım Konakları Karşısı 3+1 Bahçeli Villa', '6500₺ günlüğü', 'Maksimum Kişi: 5', '', [
+              'https://i.hizliresim.com/j2v1exu.jpeg',
+              'https://i.hizliresim.com/fl0y0xj.jpeg',
+              'https://i.hizliresim.com/nk7cxcx.jpeg'])"><i class='fa-solid fa-circle-info'></i>Detay</button>
+            <a class="whatsapp-btn" target="_blank" rel="noopener" href="https://wa.me/905075753842?text=Merhaba, 'Çandarlı Ayten Hanım Konakları Karşısı 3+1 Bahçeli Villa' hakkında bilgi almak istiyorum."><i class="fa-brands fa-whatsapp"></i>İletişime Geç</a>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <span class="portfolio-badge">Sezonluk</span>
+        <div class="portfolio-img" id="a101-img">
+          <button class="slider-arrow left" onclick="event.stopPropagation();slidePortfolioImg(this, -1)">&lt;</button>
+          <img src="https://i.hizliresim.com/4xda6rh.jpeg" alt="A101 Üstü Daire" />
+          <button class="slider-arrow right" onclick="event.stopPropagation();slidePortfolioImg(this, 1)">&gt;</button>
+          <div class="slider-dots">
+            <span class="slider-dot active" onclick="event.stopPropagation();gotoPortfolioImg(this, 0)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 1)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 2)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 3)"></span>
+          </div>
+        </div>
+        <div class="portfolio-content">
+          <div class="portfolio-title">Çandarlı Merkez A101'in üstü 1+1 Daire</div>
+          <div class="portfolio-price">4500₺ günlüğü</div>
+          <div class="portfolio-info">Maksimum Kişi: 4</div>
+          <div style="display:flex;gap:0.7rem;align-items:center;">
+            <button class="detail-btn" type="button" onclick="openModal('Çandarlı Merkez A101\'in üstü 1+1 Daire', '4500₺ günlüğü', 'Maksimum Kişi: 4', '', [
+              'https://i.hizliresim.com/4xda6rh.jpeg',
+              'https://i.hizliresim.com/hb2p0xl.jpeg',
+              'https://i.hizliresim.com/oweu08p.jpeg',
+              'https://i.hizliresim.com/mvkbiyt.jpeg'])"><i class='fa-solid fa-circle-info'></i>Detay</button>
+            <a class="whatsapp-btn" target="_blank" rel="noopener" href="https://wa.me/905075753842?text=Merhaba, 'Çandarlı Merkez A101'in üstü 1+1 Daire' hakkında bilgi almak istiyorum."><i class="fa-brands fa-whatsapp"></i>İletişime Geç</a>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <span class="portfolio-badge">Sezonluk</span>
+        <div class="portfolio-img" id="apart-img">
+          <button class="slider-arrow left" onclick="event.stopPropagation();slidePortfolioImg(this, -1)">&lt;</button>
+          <img src="https://i.hizliresim.com/c4tusae.jpeg" alt="Apart Daire" />
+          <button class="slider-arrow right" onclick="event.stopPropagation();slidePortfolioImg(this, 1)">&gt;</button>
+          <div class="slider-dots">
+            <span class="slider-dot active" onclick="event.stopPropagation();gotoPortfolioImg(this, 0)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 1)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 2)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 3)"></span>
+          </div>
+        </div>
+        <div class="portfolio-content">
+          <div class="portfolio-title">Çandarlı Pazaryeri Karşısı Apart Daire</div>
+          <div class="portfolio-price">2 kişilik oda kişi başı 1000₺<br>suit oda 5000₺</div>
+          <div class="portfolio-info">Maksimum Kişi: 5</div>
+          <div style="display:flex;gap:0.7rem;align-items:center;">
+            <button class="detail-btn" type="button" onclick="openModal('Çandarlı Pazaryeri Karşısı Apart Daire', '2 kişilik oda kişi başı 1000₺, suit oda 5000₺', 'Maksimum Kişi: 5', '', [
+              'https://i.hizliresim.com/c4tusae.jpeg',
+              'https://i.hizliresim.com/n2sld9g.jpeg',
+              'https://i.hizliresim.com/1ahxep7.jpeg',
+              'https://i.hizliresim.com/orswemo.jpeg'])"><i class='fa-solid fa-circle-info'></i>Detay</button>
+            <a class="whatsapp-btn" target="_blank" rel="noopener" href="https://wa.me/905075753842?text=Merhaba, 'Çandarlı Pazaryeri Karşısı Apart Daire' hakkında bilgi almak istiyorum."><i class="fa-brands fa-whatsapp"></i>İletişime Geç</a>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <span class="portfolio-badge">Sezonluk</span>
+        <div class="portfolio-img" id="sato-img">
+          <button class="slider-arrow left" onclick="event.stopPropagation();slidePortfolioImg(this, -1)">&lt;</button>
+          <img src="https://i.hizliresim.com/kyn9cmg.jpeg" alt="Şato Otel Daire" />
+          <button class="slider-arrow right" onclick="event.stopPropagation();slidePortfolioImg(this, 1)">&gt;</button>
+          <div class="slider-dots">
+            <span class="slider-dot active" onclick="event.stopPropagation();gotoPortfolioImg(this, 0)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 1)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 2)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 3)"></span>
+          </div>
+        </div>
+        <div class="portfolio-content">
+          <div class="portfolio-title">Eski Şato Otel Yakını 1+1 daire</div>
+          <div class="portfolio-price">3000₺ günlüğü</div>
+          <div class="portfolio-info">Maksimum Kişi: 3</div>
+          <div style="display:flex;gap:0.7rem;align-items:center;">
+            <button class="detail-btn" type="button" onclick="openModal('Eski Şato Otel Yakını 1+1 daire', '3000₺ günlüğü', 'Maksimum Kişi: 3', '', [
+              'https://i.hizliresim.com/kyn9cmg.jpeg',
+              'https://i.hizliresim.com/g9g9c7o.jpeg',
+              'https://i.hizliresim.com/l7f60nu.jpeg',
+              'https://i.hizliresim.com/27wz9ho.jpeg'])"><i class='fa-solid fa-circle-info'></i>Detay</button>
+            <a class="whatsapp-btn" target="_blank" rel="noopener" href="https://wa.me/905075753842?text=Merhaba, 'Eski Şato Otel Yakını 1+1 daire' hakkında bilgi almak istiyorum."><i class="fa-brands fa-whatsapp"></i>İletişime Geç</a>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <span class="portfolio-badge">Sezonluk</span>
+        <div class="portfolio-img" id="spotcu-img">
+          <button class="slider-arrow left" onclick="event.stopPropagation();slidePortfolioImg(this, -1)">&lt;</button>
+          <img src="https://i.hizliresim.com/725ej0x.jpeg" alt="Spotçunun Sokağında Daire" />
+          <button class="slider-arrow right" onclick="event.stopPropagation();slidePortfolioImg(this, 1)">&gt;</button>
+          <div class="slider-dots">
+            <span class="slider-dot active" onclick="event.stopPropagation();gotoPortfolioImg(this, 0)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 1)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 2)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 3)"></span>
+          </div>
+        </div>
+        <div class="portfolio-content">
+          <div class="portfolio-title">Çandarlı Spotçunun Sokağında 1+1 Daire</div>
+          <div class="portfolio-price">4500₺ günlüğü</div>
+          <div class="portfolio-info">Maksimum Kişi: 3</div>
+          <div style="display:flex;gap:0.7rem;align-items:center;">
+            <button class="detail-btn" type="button" onclick="openModal('Çandarlı Spotçunun Sokağında 1+1 Daire', '4500₺ günlüğü', 'Maksimum Kişi: 3', '', [
+              'https://i.hizliresim.com/725ej0x.jpeg',
+              'https://i.hizliresim.com/80op90j.jpeg',
+              'https://i.hizliresim.com/3tz4tfq.jpeg',
+              'https://i.hizliresim.com/snaq6w1.jpeg'])"><i class='fa-solid fa-circle-info'></i>Detay</button>
+            <a class="whatsapp-btn" target="_blank" rel="noopener" href="https://wa.me/905075753842?text=Merhaba, 'Çandarlı Spotçunun Sokağında 1+1 Daire' hakkında bilgi almak istiyorum."><i class="fa-brands fa-whatsapp"></i>İletişime Geç</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="dikili" class="tab-content">
+      <div class="portfolio-item">
+        <span class="portfolio-badge">Sezonluk</span>
+        <div class="portfolio-img" id="dikili-ptt-img">
+          <button class="slider-arrow left" onclick="event.stopPropagation();slidePortfolioImg(this, -1)">&lt;</button>
+          <img src="https://i.hizliresim.com/956i0dc.jpeg" alt="Dikili PTT Arkası Daire" />
+          <button class="slider-arrow right" onclick="event.stopPropagation();slidePortfolioImg(this, 1)">&gt;</button>
+          <div class="slider-dots">
+            <span class="slider-dot active" onclick="event.stopPropagation();gotoPortfolioImg(this, 0)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 1)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 2)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 3)"></span>
+          </div>
+        </div>
+        <div class="portfolio-content">
+          <div class="portfolio-title">Dikili PTT Arkası 3+1 Dubleks Daire</div>
+          <div class="portfolio-price">5500₺ günlüğü</div>
+          <div class="portfolio-info">Maksimum Kişi: 6</div>
+          <div style="display:flex;gap:0.7rem;align-items:center;">
+            <button class="detail-btn" type="button" onclick="openModal('Dikili PTT Arkası 3+1 Dubleks Daire', '5500₺ günlüğü', 'Maksimum Kişi: 6', '', [
+              'https://i.hizliresim.com/956i0dc.jpeg',
+              'https://i.hizliresim.com/ewx1muc.jpeg',
+              'https://i.hizliresim.com/ot0g5pm.jpeg',
+              'https://i.hizliresim.com/n6frgi8.jpeg'])"><i class='fa-solid fa-circle-info'></i>Detay</button>
+            <a class="whatsapp-btn" target="_blank" rel="noopener" href="https://wa.me/905075753842?text=Merhaba, 'Dikili PTT Arkası 3+1 Dubleks Daire' hakkında bilgi almak istiyorum."><i class="fa-brands fa-whatsapp"></i>İletişime Geç</a>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <span class="portfolio-badge">Sezonluk</span>
+        <div class="portfolio-img" id="gazipasa-img">
+          <button class="slider-arrow left" onclick="event.stopPropagation();slidePortfolioImg(this, -1)">&lt;</button>
+          <img src="https://i.hizliresim.com/1uyhh33.jpeg" alt="Gazipaşa Daire" />
+          <button class="slider-arrow right" onclick="event.stopPropagation();slidePortfolioImg(this, 1)">&gt;</button>
+          <div class="slider-dots">
+            <span class="slider-dot active" onclick="event.stopPropagation();gotoPortfolioImg(this, 0)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 1)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 2)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 3)"></span>
+          </div>
+        </div>
+        <div class="portfolio-content">
+          <div class="portfolio-title">Dikili Gazipaşa Mah. Belediye Sosyal Tesisi Yanı 2+1 Daire</div>
+          <div class="portfolio-price">4500₺ günlüğü - Aylık 90.000₺</div>
+          <div class="portfolio-info">Maksimum Kişi: 5</div>
+          <div style="display:flex;gap:0.7rem;align-items:center;">
+            <button class="detail-btn" type="button" onclick="openModal('Dikili Gazipaşa Mah. Belediye Sosyal Tesisi Yanı 2+1 Daire', '4500₺ günlüğü - Aylık 90.000₺', 'Maksimum Kişi: 5', '', [
+              'https://i.hizliresim.com/1uyhh33.jpeg',
+              'https://i.hizliresim.com/t0uw8g6.jpeg',
+              'https://i.hizliresim.com/qccjm8v.jpeg',
+              'https://i.hizliresim.com/s80esq6.jpeg'])"><i class='fa-solid fa-circle-info'></i>Detay</button>
+            <a class="whatsapp-btn" target="_blank" rel="noopener" href="https://wa.me/905075753842?text=Merhaba, 'Dikili Gazipaşa Mah. Belediye Sosyal Tesisi Yanı 2+1 Daire' hakkında bilgi almak istiyorum."><i class="fa-brands fa-whatsapp"></i>İletişime Geç</a>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <span class="portfolio-badge">Sezonluk</span>
+        <div class="portfolio-img" id="denizesifir-img">
+          <button class="slider-arrow left" onclick="event.stopPropagation();slidePortfolioImg(this, -1)">&lt;</button>
+          <img src="https://i.hizliresim.com/aouh11c.jpeg" alt="Denize Sıfır Daire" />
+          <button class="slider-arrow right" onclick="event.stopPropagation();slidePortfolioImg(this, 1)">&gt;</button>
+          <div class="slider-dots">
+            <span class="slider-dot active" onclick="event.stopPropagation();gotoPortfolioImg(this, 0)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 1)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 2)"></span>
+            <span class="slider-dot" onclick="event.stopPropagation();gotoPortfolioImg(this, 3)"></span>
+          </div>
+        </div>
+        <div class="portfolio-content">
+          <div class="portfolio-title">Dikili Sahil Güvenliğin Karşısı Denize Sıfır 2+1 Daire</div>
+          <div class="portfolio-price">4500₺ günlüğü</div>
+          <div class="portfolio-info">Maksimum Kişi: 5</div>
+          <div style="display:flex;gap:0.7rem;align-items:center;">
+            <button class="detail-btn" type="button" onclick="openModal('Dikili Sahil Güvenliğin Karşısı Denize Sıfır 2+1 Daire', '4500₺ günlüğü', 'Maksimum Kişi: 5', '', [
+              'https://i.hizliresim.com/aouh11c.jpeg',
+              'https://i.hizliresim.com/5fmspyv.jpeg',
+              'https://i.hizliresim.com/goq5uq5.jpeg',
+              'https://i.hizliresim.com/8trum9c.jpeg'])"><i class='fa-solid fa-circle-info'></i>Detay</button>
+            <a class="whatsapp-btn" target="_blank" rel="noopener" href="https://wa.me/905075753842?text=Merhaba, 'Dikili Sahil Güvenliğin Karşısı Denize Sıfır 2+1 Daire' hakkında bilgi almak istiyorum."><i class="fa-brands fa-whatsapp"></i>İletişime Geç</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="iletisim" class="tab-content">
+      <div class="contact">
+        <h2>İletişim</h2>
+        <div class="contact-info">
+          <strong>Telefon:</strong> <a href="tel:05075753842">0507 575 38 42</a><br>
+          <strong>Instagram:</strong> <a href="https://instagram.com/eliziemlakdikili" target="_blank">@eliziemlakdikili</a>
+        </div>
+        <div class="info-box" style="margin-top:1.5rem;">
+          <div class="info-content">
+            <div style="font-size:1.13rem;font-weight:700;margin-bottom:0.7rem;">Bilgilendirme – Elizi Emlak</div>
+            <div style="margin-bottom:1.1rem;">
+              Elizi Emlak, yalnızca aracılık hizmeti sunmakta olup tüm işlemler resmi evraklar ile yürütülmektedir. Hem kiraya veren hem de kiracı tarafların hakları, mevzuata uygun şekilde güvence altına alınmaktadır.
+            </div>
+            <div>
+              Rezervasyon işlemleri için, talep edilen daireye ilişkin kapora alınması gerekmektedir. Kapora ödemesi yapılmadığı sürece ilgili tarih, başka talepler doğrultusunda başka kişiler tarafından rezerve edilebilir. Bu nedenle planladığınız tarihlerde konaklama garantisi için ön ödeme işlemini zamanında gerçekleştirmeniz önemle rica olunur.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="address">
+        <strong>Dükkan Adresimiz:</strong><br>
+        Çandarlı Mah. Hürriyet Meydanı No:1A Dikili/İzmir
+        <div style="margin-top:1.2rem;max-width:100%;overflow:hidden;border-radius:16px;box-shadow:0 2px 12px rgba(44,62,80,0.10);">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d1551.7498725474957!2d26.931832650880644!3d38.93541017119111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x14ba3da0a05fabeb%3A0x335cd5c447e7ce8f!2zw4dhbmRhcmzEsSBFbGl6aSBFbWxhayB2ZSBHYXlyaW1lbmt1bCBEYW7EscWfbWFubMSxxJ_EsSwgw4dhbmRhcmzEsSwgSMO8cnJpeWV0IE1leWRhbsSxLCBEaWtpbGkvxLB6bWly!3m2!1d38.935066899999995!2d26.9332979!4m5!1s0x14ba3da0a05fabeb%3A0x335cd5c447e7ce8f!2zw4dhbmRhcmzEsSwgSMO8cnJpeWV0IE1leWRhbsSxIE5vOiAxQSwgMzU5ODAgRGlraWxpL8Swem1pcg!3m2!1d38.935066899999995!2d26.9332979!5e0!3m2!1str!2str!4v1751360737298!5m2!1str!2str" width="100%" height="320" style="border:0;min-width:200px;max-width:100%;border-radius:16px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal-bg" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.45);z-index:1000;"></div>
+  <div id="modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;min-width:320px;max-width:98vw;width:600px;padding:2.5rem 2rem 1.5rem 2rem;border-radius:20px;box-shadow:0 8px 32px rgba(44,62,80,0.18);z-index:1001;transition:background 0.3s;">
+    <button onclick="closeModal()" style="position:absolute;top:1.2rem;right:1.2rem;background:none;border:none;font-size:1.6rem;cursor:pointer;color:#888;"><i class="fa-solid fa-xmark"></i></button>
+    <div id="modal-slider" style="margin-bottom:1.2rem;display:none;"></div>
+    <h2 id="modal-title" style="margin-top:0;color:var(--main-color);font-size:1.4rem;"></h2>
+    <div id="modal-price" style="font-weight:600;color:var(--main-dark);margin-bottom:0.7rem;font-size:1.15rem;"></div>
+    <div id="modal-info" style="color:#555;margin-bottom:0.9rem;font-size:1.08rem;"></div>
+    <div id="modal-desc" style="color:#444;font-size:1.08rem;"></div>
+    <div id="modal-map" style="margin-top:1.2rem;display:none;"></div>
+    <div id="modal-note" style="color:#1ccfcf;font-size:1.07rem;margin-top:1.1rem;font-weight:600;">Rezervasyon ve boş günler için lütfen iletişime geçiniz.</div>
+  </div>
+  <div id="gallery-modal-bg" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.55);z-index:2000;"></div>
+  <div id="gallery-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;min-width:320px;max-width:98vw;width:650px;padding:2.5rem 2rem 1.5rem 2rem;border-radius:22px;box-shadow:0 8px 32px rgba(44,62,80,0.18);z-index:2001;transition:background 0.3s;overflow:hidden;">
+    <button onclick="closeGalleryModal()" style="position:absolute;top:1.2rem;right:1.2rem;background:none;border:none;font-size:1.7rem;cursor:pointer;color:#888;"><i class="fa-solid fa-xmark"></i></button>
+    <div id="gallery-slider" style="margin-bottom:1.2rem;display:flex;align-items:center;justify-content:center;position:relative;height:340px;">
+      <button id="gallery-prev" style="position:absolute;left:0;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.18);color:#fff;border:none;border-radius:50%;width:38px;height:38px;font-size:1.3rem;cursor:pointer;z-index:2;display:none;">&lt;</button>
+      <img id="gallery-img" src="" style="max-width:100%;max-height:340px;border-radius:16px;box-shadow:0 2px 16px rgba(44,62,80,0.13);background:#e0f7fa;object-fit:contain;" />
+      <button id="gallery-next" style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.18);color:#fff;border:none;border-radius:50%;width:38px;height:38px;font-size:1.3rem;cursor:pointer;z-index:2;display:none;">&gt;</button>
+    </div>
+    <div id="gallery-dots" style="text-align:center;margin-top:0.4rem;"></div>
+  </div>
+  <script>
+    function showTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+      if(tab === 'candarlı') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('candarlı').classList.add('active');
+      } else if(tab === 'dikili') {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('dikili').classList.add('active');
+      } else {
+        document.querySelectorAll('.tab-btn')[2].classList.add('active');
+        document.getElementById('iletisim').classList.add('active');
+      }
+    }
+    function openModal(title, price, info, desc, images) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-price').innerText = price;
+      document.getElementById('modal-info').innerText = info;
+      document.getElementById('modal-desc').innerText = desc;
+      // Görsel slider
+      var slider = document.getElementById('modal-slider');
+      if (images && images.length > 0) {
+        let idx = 0;
+        slider.style.display = 'block';
+        slider.innerHTML = `
+          <div style='position:relative;width:100%;height:320px;max-height:50vw;overflow:hidden;border-radius:14px;'>
+            <img id='modal-img' src='${images[0]}' style='width:100%;height:100%;object-fit:cover;border-radius:14px;box-shadow:0 2px 16px rgba(44,62,80,0.13);background:#e0f7fa;' />
+            <button id='prev-img' style='position:absolute;top:50%;left:10px;transform:translateY(-50%);background:rgba(0,0,0,0.4);color:#fff;border:none;border-radius:50%;width:38px;height:38px;font-size:1.3rem;cursor:pointer;'>&lt;</button>
+            <button id='next-img' style='position:absolute;top:50%;right:10px;transform:translateY(-50%);background:rgba(0,0,0,0.4);color:#fff;border:none;border-radius:50%;width:38px;height:38px;font-size:1.3rem;cursor:pointer;'>&gt;</button>
+          </div>
+          <div style='text-align:center;margin-top:0.4rem;'>${images.map((_,i)=>`<span id='dot${i}' style='display:inline-block;width:10px;height:10px;margin:0 3px;border-radius:50%;background:${i===0?'#1ccfcf':'#bbb'};'></span>`).join('')}</div>
+        `;
+        document.getElementById('prev-img').onclick = function(e){ e.stopPropagation(); idx=(idx-1+images.length)%images.length; updateImg(); };
+        document.getElementById('next-img').onclick = function(e){ e.stopPropagation(); idx=(idx+1)%images.length; updateImg(); };
+        function updateImg() {
+          document.getElementById('modal-img').src = images[idx];
+          images.forEach((_,i)=>{
+            document.getElementById('dot'+i).style.background = (i===idx)?'#1ccfcf':'#bbb';
+          });
+        }
+      } else {
+        slider.style.display = 'none';
+        slider.innerHTML = '';
+      }
+      // Havuzlu villa için konum ekle
+      var mapDiv = document.getElementById('modal-map');
+      if(title === 'Çandarlı Denizköy Yolu Üzeri Havuzlu Villa') {
+        mapDiv.style.display = 'block';
+        mapDiv.innerHTML = `<iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3103.5685890187824!2d26.893394!3d38.933837!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzjCsDU2JzAxLjgiTiAyNsKwNTMnMzYuMiJF!5e0!3m2!1str!2str!4v1751318752194!5m2!1str!2str" width="100%" height="150" style="border:0;border-radius:8px;box-shadow:0 1px 4px rgba(44,62,80,0.10);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+      } else {
+        mapDiv.style.display = 'none';
+        mapDiv.innerHTML = '';
+      }
+      document.getElementById('modal').style.display = 'block';
+      document.getElementById('modal-bg').style.display = 'block';
+    }
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+      document.getElementById('modal-bg').style.display = 'none';
+    }
+    document.getElementById('modal-bg').onclick = closeModal;
+    // Galeri Modalı
+    let galleryImages = [];
+    let galleryIdx = 0;
+    function openGalleryModal(images) {
+      if (!images || images.length === 0) return;
+      galleryImages = images;
+      galleryIdx = 0;
+      document.getElementById('gallery-img').src = images[0];
+      document.getElementById('gallery-modal').style.display = 'block';
+      document.getElementById('gallery-modal-bg').style.display = 'block';
+      updateGalleryNav();
+    }
+    function closeGalleryModal() {
+      document.getElementById('gallery-modal').style.display = 'none';
+      document.getElementById('gallery-modal-bg').style.display = 'none';
+    }
+    function updateGalleryNav() {
+      const prevBtn = document.getElementById('gallery-prev');
+      const nextBtn = document.getElementById('gallery-next');
+      const img = document.getElementById('gallery-img');
+      const dots = document.getElementById('gallery-dots');
+      if (galleryImages.length > 1) {
+        prevBtn.style.display = 'block';
+        nextBtn.style.display = 'block';
+      } else {
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+      }
+      img.src = galleryImages[galleryIdx];
+      dots.innerHTML = galleryImages.map((_,i)=>`<span onclick='galleryGoto(${i})' style='display:inline-block;width:10px;height:10px;margin:0 3px;border-radius:50%;background:${i===galleryIdx?'#1ccfcf':'#bbb'};cursor:pointer;'></span>`).join('');
+    }
+    document.getElementById('gallery-prev').onclick = function(e){ e.stopPropagation(); galleryIdx=(galleryIdx-1+galleryImages.length)%galleryImages.length; updateGalleryNav(); };
+    document.getElementById('gallery-next').onclick = function(e){ e.stopPropagation(); galleryIdx=(galleryIdx+1)%galleryImages.length; updateGalleryNav(); };
+    function galleryGoto(i) { galleryIdx = i; updateGalleryNav(); }
+    document.getElementById('gallery-modal-bg').onclick = closeGalleryModal;
+    // Mini slider for portfolio cards
+    const portfolioImages = {
+      'villa-img': [
+        'https://i.hizliresim.com/s58z0za.jpeg',
+        'https://i.hizliresim.com/g4sqlh8.jpeg',
+        'https://i.hizliresim.com/sc650zx.jpeg',
+        'https://i.hizliresim.com/5wnvsjn.jpeg'
+      ],
+      'apart-img': [
+        'https://i.hizliresim.com/c4tusae.jpeg',
+        'https://i.hizliresim.com/n2sld9g.jpeg',
+        'https://i.hizliresim.com/1ahxep7.jpeg',
+        'https://i.hizliresim.com/orswemo.jpeg'
+      ],
+      'baris-img': [
+        'https://i.hizliresim.com/p4ax6ak.jpeg',
+        'https://i.hizliresim.com/56rjl7r.jpeg',
+        'https://i.hizliresim.com/lr1711w.jpeg',
+        'https://i.hizliresim.com/jbp586u.jpeg'
+      ],
+      'ayten-img': [
+        'https://i.hizliresim.com/j2v1exu.jpeg',
+        'https://i.hizliresim.com/fl0y0xj.jpeg',
+        'https://i.hizliresim.com/nk7cxcx.jpeg'
+      ],
+      'a101-img': [
+        'https://i.hizliresim.com/4xda6rh.jpeg',
+        'https://i.hizliresim.com/hb2p0xl.jpeg',
+        'https://i.hizliresim.com/oweu08p.jpeg',
+        'https://i.hizliresim.com/mvkbiyt.jpeg'
+      ],
+      'sato-img': [
+        'https://i.hizliresim.com/kyn9cmg.jpeg',
+        'https://i.hizliresim.com/g9g9c7o.jpeg',
+        'https://i.hizliresim.com/l7f60nu.jpeg',
+        'https://i.hizliresim.com/27wz9ho.jpeg'
+      ],
+      'spotcu-img': [
+        'https://i.hizliresim.com/725ej0x.jpeg',
+        'https://i.hizliresim.com/80op90j.jpeg',
+        'https://i.hizliresim.com/3tz4tfq.jpeg',
+        'https://i.hizliresim.com/snaq6w1.jpeg'
+      ],
+      'dikili-ptt-img': [
+        'https://i.hizliresim.com/956i0dc.jpeg',
+        'https://i.hizliresim.com/ewx1muc.jpeg',
+        'https://i.hizliresim.com/ot0g5pm.jpeg',
+        'https://i.hizliresim.com/n6frgi8.jpeg'
+      ],
+      'gazipasa-img': [
+        'https://i.hizliresim.com/1uyhh33.jpeg',
+        'https://i.hizliresim.com/t0uw8g6.jpeg',
+        'https://i.hizliresim.com/qccjm8v.jpeg',
+        'https://i.hizliresim.com/s80esq6.jpeg'
+      ],
+      'denizesifir-img': [
+        'https://i.hizliresim.com/aouh11c.jpeg',
+        'https://i.hizliresim.com/5fmspyv.jpeg',
+        'https://i.hizliresim.com/goq5uq5.jpeg',
+        'https://i.hizliresim.com/8trum9c.jpeg'
+      ]
+    };
+    function slidePortfolioImg(btn, dir) {
+      const imgDiv = btn.parentElement;
+      const img = imgDiv.querySelector('img');
+      const dots = imgDiv.querySelectorAll('.slider-dot');
+      const id = imgDiv.id;
+      if (!portfolioImages[id]) return;
+      let idx = Array.from(dots).findIndex(dot => dot.classList.contains('active'));
+      idx = (idx + dir + portfolioImages[id].length) % portfolioImages[id].length;
+      img.src = portfolioImages[id][idx];
+      dots.forEach((d,i)=>d.classList.toggle('active', i===idx));
+    }
+    function gotoPortfolioImg(dot, idx) {
+      const imgDiv = dot.parentElement.parentElement;
+      const img = imgDiv.querySelector('img');
+      const dots = imgDiv.querySelectorAll('.slider-dot');
+      const id = imgDiv.id;
+      if (!portfolioImages[id]) return;
+      img.src = portfolioImages[id][idx];
+      dots.forEach((d,i)=>d.classList.toggle('active', i===idx));
+    }
+    // Tüm portföyler için harita gösterimini tek bir yerde yönet
+    const mapIframes = {
+      'Çandarlı Denizköy Yolu Üzeri Havuzlu Villa': `<iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3103.5685890187824!2d26.893394!3d38.933837!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzjCsDU2JzAxLjgiTiAyNsKwNTMnMzYuMiJF!5e0!3m2!1str!2str!4v1751318752194!5m2!1str!2str" width="100%" height="150" style="border:0;border-radius:8px;box-shadow:0 1px 4px rgba(44,62,80,0.10);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`,
+      'Çandarlı Pazaryeri Karşısı Apart Daire': `<iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1231.576302981996!2d26.933569774037522!3d38.938211868677975!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1str!2str!4v1751364640265!5m2!1str!2str\" width=\"100%\" height=\"150\" style=\"border:0;border-radius:8px;box-shadow:0 1px 4px rgba(44,62,80,0.10);\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>`,
+      'Çandarlı Barış Market Üstü Dublex 3+1 Daire': `<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d387.90370693023607!2d26.944630519839507!3d38.94160498135822!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1str!2str!4v1751365362845!5m2!1str!2str" width="100%" height="150" style="border:0;border-radius:8px;box-shadow:0 1px 4px rgba(44,62,80,0.10);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`,
+      'Çandarlı Ayten Hanım Konakları Karşısı 3+1 Bahçeli Villa': `<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d387.90564722199485!2d26.94345302969279!3d38.941250328534124!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1str!2str!4v1751365216512!5m2!1str!2str" width="100%" height="150" style="border:0;border-radius:8px;box-shadow:0 1px 4px rgba(44,62,80,0.10);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`,
+      'Çandarlı Merkez A101\'in üstü 1+1 Daire': '<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d461.3299189934731!2d26.93493628104941!3d38.936651964021884!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1str!2str!4v1751386658914!5m2!1str!2str" width="100%" height="150" style="border:0;border-radius:8px;box-shadow:0 1px 4px rgba(44,62,80,0.10);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
+      'Eski Şato Otel Yakını 1+1 daire': '<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1097.2338655557226!2d26.90595157591289!3d38.936637648765604!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1str!2str!4v1751386818527!5m2!1str!2str" width="100%" height="150" style="border:0;border-radius:8px;box-shadow:0 1px 4px rgba(44,62,80,0.10);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
+      'Çandarlı Spotçunun Sokağında 1+1 Daire': '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1097.1971251447844!2d26.931124834725516!3d38.93901213326558!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14ba3c5ebbdbcd17%3A0x5c0ff9dc6b518101!2zw4dhbmRhcmxpLCDDh2FuZGFybMSxLCAzNTk4MCBEaWtpbGkvxLB6bWly!5e0!3m2!1str!2str!4v1751387127272!5m2!1str!2str" width="100%" height="150" style="border:0;border-radius:8px;box-shadow:0 1px 4px rgba(44,62,80,0.10);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
+      'Dikili PTT Arkası 3+1 Dubleks Daire': '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d547.5758835971628!2d26.88822678536204!3d39.07100948632081!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14ba140227ea028b%3A0x5ca1f2449e6e44b1!2sPtt!5e0!3m2!1str!2str!4v1751387317816!5m2!1str!2str" width="100%" height="150" style="border:0;border-radius:8px;box-shadow:0 1px 4px rgba(44,62,80,0.10);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
+      'Dikili Gazipaşa Mah. Belediye Sosyal Tesisi Yanı 2+1 Daire': '<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d774.4825790791515!2d26.87557233126247!3d39.06250217373254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1str!2str!4v1751387533550!5m2!1str!2str" width="100%" height="150" style="border:0;border-radius:8px;box-shadow:0 1px 4px rgba(44,62,80,0.10);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
+      'Dikili Sahil Güvenliğin Karşısı Denize Sıfır 2+1 Daire': '<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1095.1900759026769!2d26.886985071369065!3d39.06854067498041!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1str!2str!4v1751387676009!5m2!1str!2str" width="100%" height="150" style="border:0;border-radius:8px;box-shadow:0 1px 4px rgba(44,62,80,0.10);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'
+    };
+    const originalOpenModal = openModal;
+    openModal = function(title, price, info, desc, images) {
+      originalOpenModal(title, price, info, desc, images);
+      var mapDiv = document.getElementById('modal-map');
+      if(mapIframes[title]) {
+        mapDiv.style.display = 'block';
+        mapDiv.innerHTML = mapIframes[title];
+      }
+    }
+  </script>
+</body>
+</html> 
